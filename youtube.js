@@ -1,5 +1,5 @@
 $.fn.youtube = function(params) {
-    var isNotIE8 = window.navigator.appVersion.toLowerCase().indexOf('msie 8.0') !== -1,
+    var isNotIE8 = window.navigator.appVersion.toLowerCase().indexOf('msie 8.0') === -1,
         videoWidth = params.width || $(this).width(),
         videoHeight = params.height || $(this).height() || 300,
         videoID = params.idVideo || params,
