@@ -1,5 +1,5 @@
 // Youtube jquery plugin 
-;(function() {
+;(function($) {
     var countVideo = 0;
 
     $.fn.youtube = function(params) {
@@ -24,16 +24,14 @@
         if (!IE8) {
            $(self).append(tmpNotIE);
         } else {
-            if (!this.id) this[0].id = new Date().getTime() + countVideo++;
-            var swfParams = ['http://www.youtube.com/v/' + videoID + '?rel=0&amp;autohide=1&amp;showinfo=0&amp;wmode=transparent', this[0].id, '' + videoWidth, '' + videoHeight, '9.0.0', null, null, { 'allowfullscreen': 'true' }, null],
-                script = document.createElement('script');
-                
-            script.src = swfSrc;
-            document.head.appendChild(script);
-            script.onload = function() {
+            if (!this[0].id) this[0].id = 'youtube' + (new Date().getTime() + countVideo++);
+            var swfParams = ['http://www.youtube.com/v/' + videoID + '?rel=0&amp;autohide=1&amp;showinfo=0&amp;wmode=transparent', this[0].id, '' + videoWidth, '' + videoHeight, '9.0.0', null, null, { 'allowfullscreen': 'true' }, null];
+
+            $.getScript(swfSrc, function(data, textStatus, jqxhr) {
+                if (jqxhr.status !== 200) return;
                 $(self).append(tmpIE);
                 swfobject.embedSWF.apply(null, swfParams);
-            }
+            });
         }
 
         return self;
@@ -45,7 +43,7 @@
             $('['+ string +']').length && $('['+ string +']').each(function(index, element) {
                var attr = element.getAttribute(string);
                if (/:/.test(attr)) {
-                   attr = element.getAttribute(string).split(/:|,/).map(function(element) {
+                   attr = attr.split(/:|,/).map(function(element) {
                        return element.replace(/^\s+|\'|\s+$/g, '')
                    }).reduce(function(o, element, index, array) {
                      (index % 2 === 0) && (o[element] = array[index + 1]);
@@ -61,4 +59,4 @@
         dataHandler.start(dataHandler.vocabulary[i])
     }
 
-}());
+}(jQuery));
